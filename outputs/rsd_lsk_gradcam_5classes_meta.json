@@ -1,0 +1,41 @@
+{
+ "generated_at": "2026-10-08T11:07:48",
+ "model": "C:\\Crack\\PEP-26\\weights\\F_lsk_proposed.pt",
+ "imgsz": 640,
+ "conf_threshold": 0.25,
+ "iou_threshold": 0.5,
+ "preferred": {
+  "conf": 0.85,
+  "iou": 0.8,
+  "inside": 0.6,
+  "outside": 0.3
+ },
+ "method": "vanilla Grad-CAM, per-box target (selected detection's own predicted-class score); heatmap never masked",
+ "selected": {
+  "D00": {
+   "image": "China_MotorBike_000072.jpg",
+   "area_frac": 0.3764,
+   "hotspot": 0.5383
+  },
+  "D10": {
+   "image": "China_MotorBike_001009.jpg",
+   "area_frac": 0.0588,
+   "hotspot": 0.4615
+  },
+  "D20": {
+   "image": "China_MotorBike_000844.jpg",
+   "area_frac": 0.3669,
+   "hotspot": 0.9299
+  },
+  "D40": {
+   "image": "China_MotorBike_001579.jpg",
+   "area_frac": 0.1111,
+   "hotspot": 0.5016
+  },
+  "Repair": {
+   "image": "China_MotorBike_000448.jpg",
+   "area_frac": 0.4562,
+   "hotspot": 0.9005
+  }
+ }
+}

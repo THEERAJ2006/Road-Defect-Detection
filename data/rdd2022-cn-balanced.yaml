@@ -1,0 +1,17 @@
+# Balanced CN subset: offline-augmented train split (see scripts/balance_by_augmentation.py).
+# Val/test are byte-identical to data/rdd2022-cn.yaml — only train changed.
+# Train: 3059 originals + 8225 augmented variants (geometric + photometric,
+# seed 0). Instance histogram train: D00 7790 / D10 5376 / D20 4382 / D40 3912
+# / Repair 5117 (was 2869 / 1630 / 656 / 223 / 742). Co-occurrence inflates all
+# classes; max:min ratio improved 12.9x -> 2.0x.
+
+train: train-balanced.txt
+val: rdd2022-cn/images/val
+test: rdd2022-cn/images/test
+
+names:
+  - D00
+  - D10
+  - D20
+  - D40
+  - Repair

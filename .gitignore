@@ -1,0 +1,41 @@
+# Python / tooling
+.venv/
+__pycache__/
+*.py[cod]
+.ruff_cache/
+.pytest_cache/
+
+# Checkpoints are fetched, not committed (weights/yolov8s.pt is the base model)
+*.pt
+*.onnx
+*.engine
+!weights/.gitkeep
+
+# Ultralytics dataset cache files
+*.cache
+
+# Training / evaluation output
+runs/
+
+# Dataset (large); keep the directory skeleton only
+# (two-level globs so the .gitkeep re-includes below stay effective —
+#  a trailing /** would exclude the parent dirs and defeat the negation)
+data/rdd2022/images/*/*
+data/rdd2022/labels/*/*
+!data/rdd2022/images/*/.gitkeep
+!data/rdd2022/labels/*/.gitkeep
+data/rdd2022-cn/images/*/*
+data/rdd2022-cn/labels/*/*
+!data/rdd2022-cn/images/*/.gitkeep
+!data/rdd2022-cn/labels/*/.gitkeep
+# Derived balanced datasets (regenerable via scripts/balance_by_augmentation.py);
+# keep data/*balanced*.yaml descriptors, ignore the bulk images/labels
+data/rdd2022-cn-balanced/
+data/rdd2022-cn-dronebal/
+
+# Local junk
+.git_old/
+images.jpeg
+
+# Upstream RDD2022 release archive (multi-GB); fetch from the links in README.md
+*.zip

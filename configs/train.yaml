@@ -1,0 +1,24 @@
+# Training hyperparameters for the Sun et al. (2024) reproduction.
+#
+# PROVENANCE WARNING: the paper's full text could not be fetched (mdpi.com,
+# /pdf and /htm all refuse automated access with HTTP 403), so none of the
+# values below were read from the paper. They come from a secondary summary of
+# it and are UNVERIFIED. Re-check them against the paper's experiments section
+# before trusting any run produced with this file.
+#
+# This is a training config forwarded to ultralytics.YOLO.train(). It is NOT a
+# model architecture yaml; the stock yamls under ultralytics/cfg/models/v8/ are
+# never modified by this project.
+
+model: weights/yolov8s.pt
+
+# imgsz 640, batch 4, SGD, lr0 0.01, 4 dataloader workers, 150 epochs.
+imgsz: 640
+epochs: 150
+batch: 4
+optimizer: SGD
+lr0: 0.01
+lrf: 0.01
+workers: 4
+
+name: yolov8s-spdasf-rdd2022

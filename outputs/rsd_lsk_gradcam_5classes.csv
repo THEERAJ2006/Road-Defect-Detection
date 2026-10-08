@@ -1,0 +1,6 @@
+class,image,confidence,IoU,TP_FP_FN,target_layer,inside_activation_ratio,outside_activation_ratio
+D00,China_MotorBike_000072.jpg,0.9169,0.9402,TP,22(C2f_Faster),0.4816,0.5184
+D10,China_MotorBike_001009.jpg,0.6797,0.9067,TP,16(Add),0.4615,0.5385
+D20,China_MotorBike_000844.jpg,0.8883,0.9463,TP,22(C2f_Faster),0.8419,0.1581
+D40,China_MotorBike_001579.jpg,0.9309,0.7773,TP,16(Add),0.4673,0.5327
+Repair,China_MotorBike_000448.jpg,0.9358,0.9713,TP,22(C2f_Faster),0.7453,0.2547

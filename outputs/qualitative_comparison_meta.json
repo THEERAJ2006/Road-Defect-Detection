@@ -1,0 +1,96 @@
+{
+ "generated_at": "2026-10-08T10:31:12",
+ "models": {
+  "baseline": "C:\\Crack\\PEP-26\\runs\\ablation\\baseline\\weights\\best.pt",
+  "A_spd": "C:\\Crack\\PEP-26\\runs\\ablation\\A_spd\\weights\\best.pt",
+  "B_neck": "C:\\Crack\\PEP-26\\runs\\ablation\\B_neck\\weights\\best.pt",
+  "C_faster": "C:\\Crack\\PEP-26\\runs\\ablation\\C_faster\\weights\\best.pt",
+  "D_wiou": "C:\\Crack\\PEP-26\\runs\\ablation\\D_wiou\\weights\\best.pt",
+  "E_all": "C:\\Crack\\PEP-26\\runs\\ablation\\E_all\\weights\\best.pt",
+  "F_lsk": "C:\\Crack\\PEP-26\\runs\\ablation\\F_lsk\\weights\\best.pt",
+  "G_lsk": "C:\\Crack\\PEP-26\\runs\\ablation\\G_lsk_stale_F_arch\\weights\\best.pt",
+  "H_eiou": "C:\\Crack\\PEP-26\\runs\\ablation\\H_eiou\\weights\\best.pt",
+  "I_eiou": "C:\\Crack\\PEP-26\\runs\\ablation\\I_eiou\\weights\\best.pt",
+  "proposed": "C:\\Crack\\PEP-26\\weights\\F_lsk_proposed.pt"
+ },
+ "data_yaml": "data/rdd2022-cn.yaml",
+ "test_images_dir": "C:\\Crack\\PEP-26\\data\\rdd2022-cn\\images\\test",
+ "test_labels_dir": "C:\\Crack\\PEP-26\\data\\rdd2022-cn\\labels\\test",
+ "class_names": [
+  "D00",
+  "D10",
+  "D20",
+  "D40",
+  "Repair"
+ ],
+ "conf_threshold": 0.25,
+ "iou_threshold": 0.5,
+ "imgsz": 640,
+ "num_images": 8,
+ "selected_images": [
+  "C:\\Crack\\PEP-26\\data\\rdd2022-cn\\images\\test\\China_MotorBike_000345.jpg",
+  "C:\\Crack\\PEP-26\\data\\rdd2022-cn\\images\\test\\China_Drone_000923.jpg",
+  "C:\\Crack\\PEP-26\\data\\rdd2022-cn\\images\\test\\China_MotorBike_001465.jpg",
+  "C:\\Crack\\PEP-26\\data\\rdd2022-cn\\images\\test\\China_MotorBike_001354.jpg",
+  "C:\\Crack\\PEP-26\\data\\rdd2022-cn\\images\\test\\China_MotorBike_001766.jpg",
+  "C:\\Crack\\PEP-26\\data\\rdd2022-cn\\images\\test\\China_Drone_001475.jpg",
+  "C:\\Crack\\PEP-26\\data\\rdd2022-cn\\images\\test\\China_MotorBike_000078.jpg",
+  "C:\\Crack\\PEP-26\\data\\rdd2022-cn\\images\\test\\China_MotorBike_001718.jpg"
+ ],
+ "gradcam": {
+  "method": "vanilla Grad-CAM (sum of class scores > conf)",
+  "target_layers": {
+   "baseline": {
+    "layer": 9,
+    "type": "SPPF"
+   },
+   "A_spd": {
+    "layer": 9,
+    "type": "SPPF"
+   },
+   "B_neck": {
+    "layer": 9,
+    "type": "SPPF"
+   },
+   "C_faster": {
+    "layer": 9,
+    "type": "SPPF"
+   },
+   "D_wiou": {
+    "layer": 9,
+    "type": "SPPF"
+   },
+   "E_all": {
+    "layer": 9,
+    "type": "SPPF"
+   },
+   "F_lsk": {
+    "layer": 10,
+    "type": "SPPF"
+   },
+   "G_lsk": {
+    "layer": 10,
+    "type": "SPPF"
+   },
+   "H_eiou": {
+    "layer": 9,
+    "type": "SPPF"
+   },
+   "I_eiou": {
+    "layer": 10,
+    "type": "SPPF"
+   },
+   "proposed": {
+    "layer": 10,
+    "type": "SPPF"
+   }
+  },
+  "overlay_alpha": 0.5,
+  "note": "same SPPF rule, scale and transparency for all models"
+ },
+ "outputs": {
+  "detection_figure": "C:\\Crack\\PEP-26\\outputs\\qualitative_detection_comparison.png",
+  "gradcam_figure": "C:\\Crack\\PEP-26\\outputs\\qualitative_gradcam_comparison.png",
+  "csv": "C:\\Crack\\PEP-26\\outputs\\qualitative_selected_images.csv"
+ }
+}

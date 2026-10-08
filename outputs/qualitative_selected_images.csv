@@ -1,0 +1,9 @@
+image,category,GT_count,baseline_TP,baseline_FP,baseline_FN,A_spd_TP,A_spd_FP,A_spd_FN,B_neck_TP,B_neck_FP,B_neck_FN,C_faster_TP,C_faster_FP,C_faster_FN,D_wiou_TP,D_wiou_FP,D_wiou_FN,E_all_TP,E_all_FP,E_all_FN,F_lsk_TP,F_lsk_FP,F_lsk_FN,G_lsk_TP,G_lsk_FP,G_lsk_FN,H_eiou_TP,H_eiou_FP,H_eiou_FN,I_eiou_TP,I_eiou_FP,I_eiou_FN,proposed_TP,proposed_FP,proposed_FN,proposed_precision,proposed_recall,proposed_mean_confidence,proposed_mean_IoU
+China_MotorBike_000345.jpg,D20,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,2,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1.0,1.0,0.9712,0.994
+China_Drone_000923.jpg,Repair,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1.0,1.0,0.9014,0.9765
+China_MotorBike_001465.jpg,D10,1,1,0,0,1,0,0,1,0,0,1,0,0,1,1,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1.0,1.0,0.6986,0.9682
+China_MotorBike_001354.jpg,D00,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1.0,1.0,0.7649,0.9616
+China_MotorBike_001766.jpg,D40,1,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1.0,1.0,0.9246,0.9367
+China_Drone_001475.jpg,D00+Repair,2,1,0,1,2,0,0,2,0,0,2,0,0,1,0,1,2,0,0,2,0,0,2,0,0,2,0,0,2,0,0,2,0,0,1.0,1.0,0.6757,0.9229
+China_MotorBike_000078.jpg,D40+Repair,2,2,0,0,2,0,0,2,0,0,2,0,0,2,0,0,2,0,0,2,0,0,2,0,0,2,0,0,2,0,0,2,0,0,1.0,1.0,0.8525,0.8971
+China_MotorBike_001718.jpg,D00+D10,2,2,0,0,2,0,0,2,1,0,2,1,0,2,0,0,2,0,0,2,0,0,2,0,0,2,0,0,2,1,0,2,0,0,1.0,1.0,0.6454,0.8873

@@ -1,0 +1,24 @@
+# Chinese subset of RDD2022 (China_Drone + China_MotorBike), prepared for
+# Sun et al. (2024) Electronics 13(12) 2413. VOC XML converted to YOLO detect
+# format; split 7:2:1 as the paper states; see scripts/prepare_rdd2022_cn.py.
+#
+# SOURCE (not shipped): RDD2022 released through CRDDC'2022 —
+#   https://github.com/sekilab/RoadDamageDetector
+#   https://figshare.com/articles/dataset/RDD2022_-_The_multi-national_Road_Damage_Dataset_released_through_CRDDC_2022/21431547
+# Place RDD2022_released_through_CRDDC2022.zip in the repo root and run
+# scripts/prepare_rdd2022_cn.py to regenerate data/rdd2022-cn/.
+#
+# Class ids follow the RDD damage-code convention. 'Block crack' (3 objects
+# in China_Drone) is not an RDD code and the images carrying only that label
+# were dropped rather than relabelled.
+
+train: rdd2022-cn/images/train
+val: rdd2022-cn/images/val
+test: rdd2022-cn/images/test
+
+names:
+  - D00
+  - D10
+  - D20
+  - D40
+  - Repair

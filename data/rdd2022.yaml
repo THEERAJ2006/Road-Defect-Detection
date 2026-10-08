@@ -1,0 +1,35 @@
+# Dataset descriptor for RDD2022 road-damage detection (YOLO detect format).
+#
+# RDD2022 is NOT in this repository. Fetch it separately, convert the
+# annotations to YOLO txt, and lay the splits out as:
+#
+#   data/rdd2022/images/{train,val,test}/*.jpg
+#   data/rdd2022/labels/{train,val,test}/*.txt    # "cls xc yc w h", normalised 0-1
+#
+# `path` is omitted on purpose: Ultralytics then resolves the dataset root to
+# this file's own directory, so the split paths below stay relative to data/
+# and the repo stays portable.
+
+train: rdd2022/images/train
+val: rdd2022/images/val
+test: rdd2022/images/test
+
+# Core RDD2022 damage codes:
+#   D00 longitudinal crack
+#   D10 transverse crack
+#   D20 alligator crack
+#   D40 pothole
+#
+# CLASS IDS ARE CONVERSION-SPECIFIC. Confirm this id order against the converted
+# label files before training; if the conversion emits different ids, fix the
+# list here rather than remapping silently.
+names:
+  - D00
+  - D10
+  - D20
+  - D40
+
+# Sun et al. (2024) report five defect categories on a ~2000-image subset of
+# RDD2022. The fifth category is not identified in the paper and has no
+# equivalent in the core 4-class conversion. If your conversion has five, extend
+# `names` here and set nc accordingly in the model yaml.

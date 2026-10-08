@@ -1,0 +1,12 @@
+# Environment this repo was last exercised against (Python 3.12).
+#
+# Torch is installed from the CUDA wheel index, not PyPI:
+#   uv pip install torch torchvision --index-url https://download.pytorch.org/whl/cu130
+torch==2.14.1
+torchvision==0.29.1
+
+# The implementation this project extends. Pinned because the parse_model and
+# loss internals cited in README.md are version-specific.
+ultralytics==8.4.170
+
+pyyaml==6.0.3

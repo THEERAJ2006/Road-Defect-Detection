@@ -1,0 +1,24 @@
+{
+ "generated_at": "2026-10-08T10:58:17",
+ "model": "C:\\Crack\\PEP-26\\weights\\F_lsk_proposed.pt",
+ "data_yaml": "data/rdd2022-cn.yaml",
+ "class_names": [
+  "D00",
+  "D10",
+  "D20",
+  "D40",
+  "Repair"
+ ],
+ "conf_threshold": 0.25,
+ "iou_threshold": 0.5,
+ "imgsz": 640,
+ "head_inputs": [
+  16,
+  19,
+  22
+ ],
+ "preferred_layer": 16,
+ "method": "vanilla Grad-CAM, per-box target (anchors matching the selected detection, predicted-class score)",
+ "guarantee": "heatmap never masked/painted; crop display-only",
+ "selected": "China_MotorBike_000448.jpg"
+}

@@ -1,0 +1,90 @@
+# Arm I_eiou: paper + LSK arch (identical to yolov8s-G_lsk.yaml) + EIoU loss only.
+# Yaml is arch-identical to G_lsk; the loss is swapped code-side via
+# src.modules.eiou.install_eiou() (same convention as D_wiou / H_eiou).
+# Created 2026-10-07 from G_lsk (user scheme: I = G + EIoU).
+
+# Parameters
+nc: 80 # number of classes (overridden by the dataset yaml at train time)
+scale: s # pinned so renaming this file cannot silently fall back to scale 'n'
+scales: # model compound scaling constants, i.e. 'model=yolov8n.yaml' will call yolov8.yaml with scale 'n'
+  # [depth, width, max_channels]
+  n: [0.33, 0.25, 1024] # YOLOv8n summary: 129 layers, 3157200 parameters, 3157184 gradients, 8.9 GFLOPS
+  s: [0.33, 0.50, 1024] # YOLOv8s summary: 129 layers, 11166560 parameters, 11166544 gradients, 28.8 GFLOPS
+  m: [0.67, 0.75, 768] # YOLOv8m summary: 169 layers, 25902640 parameters, 25902624 gradients, 79.3 GFLOPS
+  l: [1.00, 1.00, 512] # YOLOv8l summary: 209 layers, 43691520 parameters, 43691504 gradients, 165.7 GFLOPS
+  x: [1.00, 1.25, 512] # YOLOv8x summary: 209 layers, 68229648 parameters, 68229632 gradients, 258.5 GFLOPS
+
+# Backbone: stock paper topology with the LSK row inserted after the P3 SPDConv.
+backbone:
+  # [from, repeats, module, args]
+  - [-1, 1, SPDConv, [64, 1, 2]] # 0-P1/2
+  - [-1, 1, SPDConv, [128, 1, 2]] # 1-P2/4
+  - [-1, 3, C2f_Faster, [128, True]] # 2
+  - [-1, 1, SPDConv, [256, 1, 2]] # 3-P3/8
+  - [-1, 1, LSKBlock, [256]] # 4-LSK, 128 -> 128 @ P3/8 (256 x width 0.5)
+  - [-1, 6, C2f_Faster, [256, True]] # 5-P3 backbone feature
+  - [-1, 1, SPDConv, [512, 1, 2]] # 6-P4/16
+  - [-1, 6, C2f_Faster, [512, True]] # 7-P4 backbone feature
+  - [-1, 1, SPDConv, [1024, 1, 2]] # 8-P5/32
+  - [-1, 3, C2f_Faster, [1024, True]] # 9
+  - [-1, 1, SPPF, [1024, 5]] # 10-P5 backbone feature
+
+# Neck = ASF-YOLO (paper change 2) + C2f_Faster (paper change 3), renumbered +1.
+head:
+  # --- Zoom_cat top-down fusion, first stage: P4 level ---
+  - [[5, 7, 10], 1, Zoom_cat, [512]] # 11 -> P4/16 triple-scale fusion
+  - [-1, 3, C2f_Faster, [512]] # 12 -> P4-level feature, 256 @ P4/16
+
+  # --- Zoom_cat top-down fusion, second stage: P3 level ---
+  - [[2, 5, 12], 1, Zoom_cat, [256]] # 13 -> P3/8 triple-scale fusion
+  - [-1, 3, C2f_Faster, [256]] # 14 -> P3-level feature, 128 @ P3/8
+
+  # --- Scale-sequence fusion over the three backbone scales ---
+  - [[5, 7, 10], 1, ScaleSequenceFusion, [256]] # 15 -> 128 @ P3/8
+
+  # --- Add: the paper's replacement for ASF-YOLO's CPAM attention ---
+  - [[15, 14], 1, Add, [256]] # 16 -> P3 head input, 128 @ P3/8
+
+  # --- PAN bottom-up, as in stock YOLOv8 but with C2f_Faster ---
+  - [-1, 1, Conv, [256, 3, 2]] # 17 -> 128 @ P4/16
+  - [[17, 12], 1, Concat, [1]] # 18 cat the fused P4-level feature, 128+256
+  - [-1, 3, C2f_Faster, [512]] # 19 (P4/16-medium)
+  - [-1, 1, Conv, [512, 3, 2]] # 20 -> 256 @ P5/32
+  - [[20, 10], 1, Concat, [1]] # 21 cat backbone P5, 256+512
+  - [-1, 3, C2f_Faster, [1024]] # 22 (P5/32-large)
+
+  - [[16, 19, 22], 1, Detect, [nc]] # 23 Detect(P3, P4, P5)
+
+# =============================================================================
+# Channel / stride trace for yolov8s (scale "s": depth 0.33, width 0.50).
+# Widths below are post-scaling, i.e. make_divisible(arg * 0.50, 8).
+# Resolutions are for a 640x640 input.
+#
+#  id  from         module               c1 -> c2            @res     note
+#  --  ----------   -------------------  -----------------  -------  ----------------------
+#   0  -1           SPDConv [64,1,2]     3    -> 32          P1/2     space-to-depth, stride 2
+#   1  -1           SPDConv [128,1,2]    32   -> 64          P2/4
+#   2  -1           C2f_Faster n=1       64   -> 64          P2/4     backbone P2
+#   3  -1           SPDConv [256,1,2]    64   -> 128         P3/8
+#   4  -1           LSKBlock [256]       128  -> 128         P3/8     NEW: selective-kernel gate
+#   5  -1           C2f_Faster n=2       128  -> 128         P3/8     backbone P3  = 128
+#   6  -1           SPDConv [512,1,2]    128  -> 256         P4/16
+#   7  -1           C2f_Faster n=2       256  -> 256         P4/16    backbone P4  = 256
+#   8  -1           SPDConv [1024,1,2]   256  -> 512         P5/32
+#   9  -1           C2f_Faster n=1       512  -> 512         P5/32
+#  10  -1           SPPF [1024,5]        512  -> 512         P5/32    backbone P5  = 512
+#  --  ----------   -------------------  -----------------  -------  ----------------------
+#  11  [5, 7, 10]   Zoom_cat [512]       128+256+512 = 896   P4/16
+#  12  -1           C2f_Faster n=1       896  -> 256         P4/16    fused P4-level feature
+#  13  [2,5,12]     Zoom_cat [256]        64+128+256 = 448   P3/8
+#  14  -1           C2f_Faster n=1       448  -> 128         P3/8     fused P3-level feature
+#  15  [5, 7, 10]   ScaleSequenceFusion   128  -> 128         P3/8
+#  16  [15,14]      Add [256]            128+128 -> 128      P3/8     widths equal -> summable
+#  17  -1           Conv [256,3,2]        128  -> 128         P4/16
+#  18  [17,12]      Concat [1]           128+256 = 384       P4/16
+#  19  -1           C2f_Faster n=1       384  -> 256         P4/16    final P4  = 256
+#  20  -1           Conv [512,3,2]        256  -> 256         P5/32
+#  21  [20,10]      Concat [1]           256+512 = 768       P5/32
+#  22  -1           C2f_Faster n=1       768  -> 512         P5/32    final P5  = 512
+#  23  [16,19,22]   Detect [nc]          128/256/512         P3/8, P4/16, P5/32 (strides 8/16/32)
+# =============================================================================

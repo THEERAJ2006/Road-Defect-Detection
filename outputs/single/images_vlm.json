@@ -1,0 +1,54 @@
+{
+ "image": "images.jpeg",
+ "vlm_mode": "mock",
+ "boxes": [
+  {
+   "box": [
+    196.2634735107422,
+    94.78755187988281,
+    347.7003173828125,
+    257.693115234375
+   ],
+   "cls": "D20",
+   "conf": 0.18363507091999054,
+   "caption": "mock: D20 defect region (conf 0.18)",
+   "mode": "mock",
+   "keep": true,
+   "reason": "VLM abstained (no defect lexicon); defer to yolo 0.18",
+   "abstained": true
+  },
+  {
+   "box": [
+    199.4860076904297,
+    96.03234100341797,
+    348.5049133300781,
+    207.08522033691406
+   ],
+   "cls": "D20",
+   "conf": 0.07551605254411697,
+   "caption": "mock: D20 defect region (conf 0.08)",
+   "mode": "mock",
+   "keep": true,
+   "reason": "VLM abstained (no defect lexicon); defer to yolo 0.08",
+   "abstained": true
+  }
+ ],
+ "cam": [
+  {
+   "box": 0,
+   "class": "D20",
+   "conf": 0.1836,
+   "layer": 16,
+   "type": "Add",
+   "inside": 0.2349
+  },
+  {
+   "box": 1,
+   "class": "D20",
+   "conf": 0.0755,
+   "layer": 16,
+   "type": "Add",
+   "inside": 0.0881
+  }
+ ]
+}

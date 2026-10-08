@@ -1,0 +1,18 @@
+# Drone-only balanced train split (see scripts/balance_by_augmentation.py
+# --include China_Drone_). Single sensor + consistent viewpoint; matches the
+# YOLO-ROC precedent (train China_Drone, cross-check MotorBike).
+# Val/test are byte-identical to data/rdd2022-cn.yaml — only train changed.
+# Train: 1655 China_Drone originals + 2261 augmented variants (seed 0).
+# Instance histogram train: D00 1710 / D10 1496 / D20 1183 / D40 1306
+# / Repair 1325 (was 985 / 877 / 201 / 62 / 539). Max:min 15.9x -> 1.4x.
+
+train: train-drone-balanced.txt
+val: rdd2022-cn/images/val
+test: rdd2022-cn/images/test
+
+names:
+  - D00
+  - D10
+  - D20
+  - D40
+  - Repair
