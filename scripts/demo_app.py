@@ -191,7 +191,15 @@ def run_pipeline(yolo, dm, adev, img_path, conf, topk, vlm, vlm_device):
         x1, y1, x2, y2, c, cf = preds[0]
         crop = crop_box(image, (x1, y1, x2, y2, c, cf))  # project default pad/context
         crop_rgb = np.array(crop)
-        cap = caption_crop(vlm, crop, vlm_device)
+        # Defect‑focused prompt for Florence‑2, including detector context
+        defect_prompt = (
+            f"Detector classification: {names[c]} with confidence {cf:.2f}. "
+            "Analyze the cropped road‑surface region. Focus only on visible pavement damage or defects. "
+            "Describe the type and appearance of the road defect. "
+            "Ignore road markings, vehicles, buildings, or any unrelated scenery. "
+            "Do not invent details that are not visible in the image."
+        )
+        cap = caption_crop(vlm, crop, vlm_device, task=defect_prompt)
         verdict = second_opinion(cf, cap["caption"], conf)
         vlm_record = {
             "class": names[c],
@@ -293,8 +301,8 @@ def main():
 
     with st.sidebar:
         st.header("Settings")
-        conf = st.slider("Confidence threshold", 0.05, 0.95, 0.25, 0.05)
-        topk = st.slider("Max boxes to explain", 1, 10, 5, 1)
+        # conf slider removed; threshold will be computed per image
+        topk = 5  # Fixed number of boxes to explain (no UI control)
         save = st.checkbox("Save results to runs/demo/", value=True)
         dev_mock = st.checkbox(
             "Dev only: allow mock captions when Florence-2 is missing",
@@ -333,12 +341,34 @@ def main():
         img_path = tmp / uploaded.name
         img_path.write_bytes(raw)
 
-        with st.spinner("Running RSD-LSK detection + Grad-CAM + VLM..."):
-            # load_florence() returns None when weights are missing; only a
-            # dev-opt-in flag may substitute mock captions for pipeline testing.
+        # First, obtain permissive candidate detections
+        permissive_conf = 0.05  # low threshold to gather all candidates
+        candidates = predict_boxes(yolo, img_path, permissive_conf, IMGSZ)
+
+        # Compute dynamic threshold from candidate confidences
+        def compute_dynamic_threshold(cands):
+            if not cands:
+                return 0.0
+            scores = [c[5] for c in cands]
+            scores.sort(reverse=True)
+            if len(scores) == 1:
+                return scores[0]
+            # Find largest gap between successive scores
+            gaps = [scores[i] - scores[i + 1] for i in range(len(scores) - 1)]
+            max_gap_idx = max(range(len(gaps)), key=lambda i: gaps[i])
+            # Threshold just above the lower score of the largest gap
+            thresh = scores[max_gap_idx + 1]
+            # Enforce a reasonable minimum threshold
+            thresh = max(thresh, 0.1)
+            return thresh
+
+        dyn_thresh = compute_dynamic_threshold(candidates)
+        st.caption(f"Auto‑selected confidence threshold: {dyn_thresh:.2f}")
+
+        with st.spinner("Running RSD-LSK detection + Grad‑CAM + VLM..."):
             effective_vlm = vlm if (vlm_real or dev_mock) else None
             result = run_pipeline(
-                yolo, dm, adev, img_path, conf, topk, effective_vlm, vlm_device
+                yolo, dm, adev, img_path, dyn_thresh, topk, effective_vlm, vlm_device
             )
         try:
             img_path.unlink(missing_ok=True)
@@ -366,8 +396,7 @@ def main():
                     f"{rep['layer']} ({rep['layer_type']}), "
                     f"inside-activation {rep['inside_activation']:.3f}"
                 )
-        else:
-            st.info(f"No defects detected at confidence ≥ {conf:.2f}.")
+            st.info(f"No defects detected at confidence ≥ {dyn_thresh:.2f}.")
 
         if result["overlay_bgr"] is not None:
             st.header("GRAD-CAM EXPLANATION")
@@ -413,7 +442,7 @@ def main():
                     "model": f"RSD-LSK ({ckpt_path.name})",
                     "detector": "YOLO-based (frozen inference)",
                     "classes": names,
-                    "confidence_threshold": conf,
+                    "confidence_threshold": dyn_thresh,
                     "gradcam": "per-box target-specific Grad-CAM "
                     "(src.explain.gradcam.box_target_cam @ Detect-head inputs)",
                     "vlm": DEFAULT_MODEL_ID,

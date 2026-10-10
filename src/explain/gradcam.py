@@ -115,7 +115,7 @@ def _forward_with_hook(det_model, img_tensor, layer_idx):
         lambda _mod, _inp, out: captured.setdefault("act", out)
     )
     x = img_tensor.requires_grad_(True)
-    with torch.enable_grad():
+    with torch.set_grad_enabled(True), torch.inference_mode(False):
         y, _ = det_model(x)
     return y, captured["act"], handle
 
